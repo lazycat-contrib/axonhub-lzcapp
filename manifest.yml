@@ -1,0 +1,50 @@
+name: AxonHub
+package: community.lazycat.app.axonhub
+version: 0.5.1
+min_os_version: 1.3.8
+description: "All-in-one AI 开发平台"
+homepage: https://github.com/looplj/axonhub
+author: looplj
+application:
+  subdomain: axonhub
+  background_task: true
+  public_path:
+    - /
+
+  upstreams:
+    - location: /
+      backend: http://axonhub:8090/
+services:
+  axonhub:
+    # looplj/axonhub:v0.5.1
+    image: registry.lazycat.cloud/czyt/looplj/axonhub:9d742c1033776500
+    ontainer_name: axonhub
+    environment:
+      - AXONHUB_DB_DIALECT=sqlite3
+      - AXONHUB_DB_DSN=file:/data/axonhub.db?cache=shared&_fk=1
+      - AXONHUB_SERVER_PORT=8090
+      - AXONHUB_LOG_LEVEL=info
+      - AXONHUB_LOG_ENCODING=json
+    binds:
+      - /lzcapp/var/data:/data
+      - /lzcapp/var/config:/config
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - "wget --no-verbose --tries=1 --spider http://localhost:8090/health"
+      start_period: 30s
+      timeout: 40s
+    setup_script: |
+      if [! -f /lzcapp/var/config/config.yaml ]; then
+         cp -r /app/config.yaml /lzcapp/var/config/config.yaml
+      fi
+      rm /app/config.yaml
+      ln -s /lzcapp/var/config/config.yaml /app/config.yaml
+
+locales:
+  zh:
+    name: AxonHub
+    description: "All-in-one AI 开发平台"
+  en:
+    name: AxonHub
+    description: "All-in-one AI Development Platform"
