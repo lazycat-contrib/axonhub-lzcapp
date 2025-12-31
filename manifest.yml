@@ -1,6 +1,6 @@
 name: AxonHub
 package: community.lazycat.app.axonhub
-version: 0.6.10
+version: 0.7.7
 min_os_version: 1.3.8
 description: "All-in-one AI 开发平台"
 homepage: https://github.com/looplj/axonhub
@@ -16,8 +16,8 @@ application:
       backend: http://axonhub:8090/
 services:
   axonhub:
-    # looplj/axonhub:v0.6.10
-    image: registry.lazycat.cloud/czyt/looplj/axonhub:1840d2490d5d956a
+    # looplj/axonhub:v0.7.7
+    image: registry.lazycat.cloud/czyt/looplj/axonhub:8d4f6b793c97d200
     ontainer_name: axonhub
     environment:
       - AXONHUB_DB_DIALECT=sqlite3
