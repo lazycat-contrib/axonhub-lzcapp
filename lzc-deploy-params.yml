@@ -1,0 +1,91 @@
+# AxonHub 设置向导配置
+# 基于官方 docker-compose.yml 优化
+
+params:
+  # ==================== 数据库配置 ====================
+  - id: db_dialect
+    type: string
+    name: "database dialect"
+    description: "Database type for AxonHub. Supported: sqlite3 (recommended for simplicity), postgres (recommended for production). MySQL is also supported."
+    default_value: "sqlite3"
+    optional: false
+
+  - id: db_dsn
+    type: string
+    name: "database connection string"
+    description: "Database connection string (DSN). For SQLite: file:/data/axonhub.db?_fk=1&_pragma=journal_mode(WAL). For PostgreSQL: postgres://user:password@host:5432/dbname?sslmode=disable. For MySQL: user:password@tcp(host:3306)/dbname?charset=utf8mb4&parseTime=True"
+    default_value: "file:/data/axonhub.db?_fk=1&_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)"
+    optional: false
+
+  # ==================== 服务配置 ====================
+  - id: server_port
+    type: number
+    name: "server port"
+    description: "Internal server port for AxonHub web interface. Default: 8090"
+    default_value: 8090
+    optional: false
+
+  # ==================== 日志配置 ====================
+  - id: log_level
+    type: string
+    name: "log level"
+    description: "Application log verbosity. Options: debug (verbose), info (normal), warn (warnings only), error (errors only). Default: info"
+    default_value: "info"
+    optional: true
+
+  - id: log_encoding
+    type: string
+    name: "log encoding"
+    description: "Log output format. Options: json (structured, recommended for production), console (human-readable). Default: json"
+    default_value: "json"
+    optional: true
+
+# ==================== 多语言支持 ====================
+locales:
+  zh:
+    # 数据库配置
+    db_dialect:
+      name: "数据库类型"
+      description: "AxonHub 使用的数据库类型。支持：sqlite3（推荐新手使用，简单便捷）、postgres（推荐生产环境）、mysql（也支持）"
+
+    db_dsn:
+      name: "数据库连接字符串"
+      description: "数据库连接字符串 (DSN)。SQLite 格式：file:/data/axonhub.db?_fk=1&_pragma=journal_mode(WAL)。PostgreSQL 格式：postgres://用户名:密码@主机:5432/数据库名?sslmode=disable。MySQL 格式：用户名:密码@tcp(主机:3306)/数据库名?charset=utf8mb4&parseTime=True"
+
+    # 服务配置
+    server_port:
+      name: "服务端口"
+      description: "AxonHub Web 界面的内部服务端口。默认：8090"
+
+    # 日志配置
+    log_level:
+      name: "日志级别"
+      description: "应用日志详细程度。选项：debug（详细）、info（正常）、warn（仅警告）、error（仅错误）。默认：info"
+
+    log_encoding:
+      name: "日志格式"
+      description: "日志输出格式。选项：json（结构化，推荐生产环境）、console（易读格式）。默认：json"
+
+  en:
+    # Database config
+    db_dialect:
+      name: "Database Dialect"
+      description: "Database type for AxonHub. Supported: sqlite3 (recommended for simplicity), postgres (recommended for production). MySQL is also supported."
+
+    db_dsn:
+      name: "Database Connection String"
+      description: "Database connection string (DSN). For SQLite: file:/data/axonhub.db?_fk=1&_pragma=journal_mode(WAL). For PostgreSQL: postgres://user:password@host:5432/dbname?sslmode=disable. For MySQL: user:password@tcp(host:3306)/dbname?charset=utf8mb4&parseTime=True"
+
+    # Server config
+    server_port:
+      name: "Server Port"
+      description: "Internal server port for AxonHub web interface. Default: 8090"
+
+    # Log config
+    log_level:
+      name: "Log Level"
+      description: "Application log verbosity. Options: debug (verbose), info (normal), warn (warnings only), error (errors only). Default: info"
+
+    log_encoding:
+      name: "Log Encoding"
+      description: "Log output format. Options: json (structured, recommended for production), console (human-readable). Default: json"

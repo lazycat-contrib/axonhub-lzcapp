@@ -1,10 +1,11 @@
 name: AxonHub
 package: community.lazycat.app.axonhub
-version: 0.9.20
+version: 0.9.21
 min_os_version: 1.3.8
 description: "All-in-one AI 开发平台"
 homepage: https://github.com/looplj/axonhub
 author: looplj
+
 application:
   subdomain: axonhub
   background_task: true
@@ -13,29 +14,33 @@ application:
 
   upstreams:
     - location: /
-      backend: http://axonhub:8090/
+      backend: http://axonhub:{{.U.server_port}}/
+
 services:
   axonhub:
-    # looplj/axonhub:v0.9.20
-    image: registry.lazycat.cloud/czyt/looplj/axonhub:ea9c976669b097ed
-    ontainer_name: axonhub
+    # looplj/axonhub:v0.9.21
+    image: registry.lazycat.cloud/czyt/looplj/axonhub:fee5b9f4abcce91a
+    container_name: axonhub
     environment:
-      - AXONHUB_DB_DIALECT=sqlite3
-      - AXONHUB_DB_DSN=file:/data/axonhub.db?_fk=1&_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)
-      - AXONHUB_SERVER_PORT=8090
-      - AXONHUB_LOG_LEVEL=info
-      - AXONHUB_LOG_ENCODING=json
+      # 数据库配置 - 用户可配置
+      - AXONHUB_DB_DIALECT={{.U.db_dialect}}
+      - AXONHUB_DB_DSN={{.U.db_dsn}}
+      # 服务配置
+      - AXONHUB_SERVER_PORT={{.U.server_port}}
+      # 日志配置
+      - AXONHUB_LOG_LEVEL={{.U.log_level}}
+      - AXONHUB_LOG_ENCODING={{.U.log_encoding}}
     binds:
       - /lzcapp/var/data:/data
       - /lzcapp/var/config:/config
     healthcheck:
       test:
         - CMD-SHELL
-        - "wget --no-verbose --tries=1 --spider http://localhost:8090/health"
+        - "wget --no-verbose --tries=1 --spider http://localhost:{{.U.server_port}}/health"
       start_period: 30s
       timeout: 40s
     setup_script: |
-      if [! -f /lzcapp/var/config/config.yaml ]; then
+      if [ ! -f /lzcapp/var/config/config.yaml ]; then
          cp -r /app/config.yaml /lzcapp/var/config/config.yaml
       fi
       rm /app/config.yaml
