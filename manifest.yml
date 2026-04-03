@@ -1,11 +1,3 @@
-name: AxonHub
-package: community.lazycat.app.axonhub
-version: 0.9.25
-min_os_version: 1.3.8
-description: "All-in-one AI 开发平台"
-homepage: https://github.com/looplj/axonhub
-author: looplj
-
 application:
   subdomain: axonhub
   background_task: true
@@ -41,15 +33,9 @@ services:
       timeout: 40s
     setup_script: |
       if [ ! -f /lzcapp/var/config/config.yaml ]; then
-         cp -r /app/config.yaml /lzcapp/var/config/config.yaml
+         if [ -f /app/config.yaml ]; then
+             cp -r /app/config.yaml /lzcapp/var/config/config.yaml
+             rm /app/config.yaml
+             ln -s /lzcapp/var/config/config.yaml /app/config.yaml
+         fi
       fi
-      rm /app/config.yaml
-      ln -s /lzcapp/var/config/config.yaml /app/config.yaml
-
-locales:
-  zh:
-    name: AxonHub
-    description: "All-in-one AI 开发平台"
-  en:
-    name: AxonHub
-    description: "All-in-one AI Development Platform"
