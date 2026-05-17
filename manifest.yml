@@ -1,8 +1,8 @@
 application:
   subdomain: axonhub
   background_task: true
-  {{if .U.is_muti_instance}}
-  muti_instance: true
+  {{if .U.is_multi_instance}}
+  multi_instance: true
   {{end}}
   public_path:
     - /
