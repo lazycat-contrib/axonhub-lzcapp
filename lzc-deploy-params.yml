@@ -41,7 +41,7 @@ params:
     optional: true
 
   # ==================== 部署模式 ====================
-  - id: is_muti_instance
+  - id: is_multi_instance
     type: bool
     name: "multi instance"
     description: "Enable multi-instance deployment mode. When enabled, multiple instances of the app can run simultaneously. Default: false"
@@ -75,7 +75,7 @@ locales:
       description: "日志输出格式。选项：json（结构化，推荐生产环境）、console（易读格式）。默认：json"
 
     # 部署模式
-    is_muti_instance:
+    is_multi_instance:
       name: "多实例部署"
       description: "启用多实例部署模式。启用后，可同时运行多个应用实例。默认：false"
 
@@ -104,6 +104,6 @@ locales:
       description: "Log output format. Options: json (structured, recommended for production), console (human-readable). Default: json"
 
     # Deploy mode
-    is_muti_instance:
+    is_multi_instance:
       name: "Multi Instance"
       description: "Enable multi-instance deployment mode. When enabled, multiple instances of the app can run simultaneously. Default: false"
