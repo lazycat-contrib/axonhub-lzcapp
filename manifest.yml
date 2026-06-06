@@ -13,8 +13,8 @@ application:
 
 services:
   axonhub:
-    # looplj/axonhub:v1.0.0-beta1
-    image: registry.lazycat.cloud/czyt/looplj/axonhub:70b7298e3e16a053
+    # looplj/axonhub:v1.0.0-beta2
+    image:  registry.lazycat.cloud/czyt/looplj/axonhub:3a30823dcd384046
     container_name: axonhub
     environment:
       # 数据库配置 - 用户可配置
