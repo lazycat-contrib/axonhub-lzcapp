@@ -1,0 +1,8 @@
+# Built LPK packages (reproducible via lzc-cli project build)
+*.lpk
+
+# Release config (local only)
+.lazycat-release.env
+
+# macOS
+.DS_Store
