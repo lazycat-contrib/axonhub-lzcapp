@@ -1,0 +1,133 @@
+name: Publish LazyCat LPK
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Release channel to publish
+        required: false
+        default: auto
+        type: choice
+        options:
+          - auto
+          - beta
+          - stable
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: lazycat-publish-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  select-channel:
+    runs-on: ubuntu-latest
+    outputs:
+      channel: ${{ steps.select.outputs.channel }}
+    steps:
+      - name: Check out application
+        uses: actions/checkout@v7
+
+      - name: Select newest upstream channel
+        id: select
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_CHANNEL: ${{ inputs.channel || 'auto' }}
+        run: |
+          set -euo pipefail
+
+          version_key() {
+            local value="${1#v}"
+            local major minor patch stable_rank beta_number
+
+            if [[ "${value}" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+              stable_rank=1
+              beta_number=0
+            elif [[ "${value}" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)-beta([0-9]+)$ ]]; then
+              stable_rank=0
+              beta_number=$((10#${BASH_REMATCH[4]}))
+            else
+              return 1
+            fi
+
+            major=$((10#${BASH_REMATCH[1]}))
+            minor=$((10#${BASH_REMATCH[2]}))
+            patch=$((10#${BASH_REMATCH[3]}))
+            printf '%010d.%010d.%010d.%d.%010d\n' \
+              "${major}" "${minor}" "${patch}" "${stable_rank}" "${beta_number}"
+          }
+
+          if [[ "${REQUESTED_CHANNEL}" != "auto" ]]; then
+            echo "channel=${REQUESTED_CHANNEL}" >>"${GITHUB_OUTPUT}"
+            echo "Selected requested channel: ${REQUESTED_CHANNEL}"
+            exit 0
+          fi
+
+          current_version="$(awk '$1 == "version:" {gsub(/"/, "", $2); print $2; exit}' package.yml)"
+          current_key="$(version_key "${current_version}")" || {
+            echo "Unsupported package version: ${current_version}" >&2
+            exit 1
+          }
+
+          if [[ "${current_version#v}" == *-beta* ]]; then
+            selected_channel=beta
+          else
+            selected_channel=stable
+          fi
+          selected_version="${current_version}"
+          selected_key="${current_key}"
+
+          while IFS= read -r tag; do
+            key="$(version_key "${tag}")" || continue
+            if [[ "${key}" > "${selected_key}" ]]; then
+              selected_key="${key}"
+              selected_version="${tag}"
+              if [[ "${tag#v}" == *-beta* ]]; then
+                selected_channel=beta
+              else
+                selected_channel=stable
+              fi
+            fi
+          done < <(gh api --paginate "repos/looplj/axonhub/tags?per_page=100" --jq '.[].name')
+
+          echo "channel=${selected_channel}" >>"${GITHUB_OUTPUT}"
+          echo "Current version: ${current_version}"
+          echo "Selected upstream version: ${selected_version}"
+          echo "Selected channel: ${selected_channel}"
+
+  publish-beta:
+    if: needs.select-channel.outputs.channel == 'beta'
+    needs: select-channel
+    uses: ca-x/lazycat-github-action/.github/workflows/lazycat.yml@v1
+    with:
+      operation: auto
+      config: .github/lazycat-action-beta.yml
+      toolchains: none
+      versioned-release-asset: true
+    secrets:
+      LAZYCAT_TOKEN: ${{ secrets.LAZYCAT_TOKEN }}
+      APPSTORE_URL: ${{ secrets.APPSTORE_URL }}
+      APPSTORE_TOKEN: ${{ secrets.APPSTORE_TOKEN }}
+      APP_ID: ${{ secrets.APP_ID }}
+      PRIVATE_STORE_GROUP_CODES: ${{ secrets.PRIVATE_STORE_GROUP_CODES }}
+
+  publish-stable:
+    if: needs.select-channel.outputs.channel == 'stable'
+    needs: select-channel
+    uses: ca-x/lazycat-github-action/.github/workflows/lazycat.yml@v1
+    with:
+      operation: auto
+      config: .github/lazycat-action.yml
+      toolchains: none
+      versioned-release-asset: true
+    secrets:
+      LAZYCAT_TOKEN: ${{ secrets.LAZYCAT_TOKEN }}
+      APPSTORE_URL: ${{ secrets.APPSTORE_URL }}
+      APPSTORE_TOKEN: ${{ secrets.APPSTORE_TOKEN }}
+      APP_ID: ${{ secrets.APP_ID }}
+      PRIVATE_STORE_GROUP_CODES: ${{ secrets.PRIVATE_STORE_GROUP_CODES }}

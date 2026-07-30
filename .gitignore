@@ -1,5 +1,7 @@
 # Built LPK packages (reproducible via lzc-cli project build)
 *.lpk
+dist/
+.lazycat-action/
 
 # Release config (local only)
 .lazycat-release.env

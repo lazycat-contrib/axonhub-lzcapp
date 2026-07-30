@@ -1,0 +1,40 @@
+version: 1
+
+project:
+  root: .
+  build_config: lzc-build.yml
+  package_file: package.yml
+  output: dist/application.lpk
+  target_arch: amd64
+
+update:
+  strategy: publish
+  allow_downgrade: false
+  version_source:
+    type: image
+    image: axonhub
+
+build:
+  run_buildscript: false
+
+images:
+  - id: axonhub
+    target: service
+    service: axonhub
+    source: docker.io/looplj/axonhub
+    channel: beta
+    tag_regex: '^v?\d+\.\d+\.\d+-beta\d+$'
+    delivery:
+      mode: lazycat
+
+stores:
+  official:
+    enabled: false
+    skip_if_version_exists: false
+    retry:
+      enabled: false
+  private:
+    enabled: true
+    skip_if_version_exists: true
+    name: AxonHub
+    summary: Beta releases published from GitHub Actions

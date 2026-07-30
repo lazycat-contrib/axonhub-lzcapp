@@ -1,13 +1,18 @@
 # axonhub-lzcapp
 
-# 最简用法 —— 只需传版本号（单镜像，自动记忆配置）
-  scripts/lzc-release-update.sh 1.0.0
+AxonHub 的懒猫微服应用包。
 
-# 指定源镜像（如果 ghcr.io 源不对）
-  scripts/lzc-release-update.sh 1.0.0 --source-image docker.io/looplj/axonhub:1.0.0
+## 自动发布
 
-# 更新 + 构建 + 发布到应用商店
-  scripts/lzc-release-update.sh 1.0.0 --publish --changelog "升级到 1.0.0 正式版"
+GitHub Actions 每天检查 `docker.io/looplj/axonhub`，也支持手动触发：
 
-# 只更新文件不构建（调试用）
-  scripts/lzc-release-update.sh 1.0.0 --skip-copy --skip-build
+```bash
+gh workflow run lazycat.yml --field channel=auto
+```
+
+- beta 版本使用 `1.0.0-beta1` 形式，只发布到喵喵私有商店。
+- 正式版本使用 `1.0.0` 形式，同时发布到喵喵私有商店和懒猫应用商店。
+- 每个版本都会生成 `community.lazycat.app.axonhub-v<version>.lpk` Release Asset。
+
+工作流引用已有的 `LAZYCAT_TOKEN`、`APPSTORE_URL`、`APPSTORE_TOKEN`，以及可选的
+`APP_ID` 和 `PRIVATE_STORE_GROUP_CODES` GitHub Actions Secrets。
