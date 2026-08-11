@@ -12,8 +12,8 @@ application:
 services:
   axonhub:
     # looplj/axonhub:v1.0.0-beta5
-    # upstream: docker.io/looplj/axonhub:v1.0.0-beta6
-    image: registry.lazycat.cloud/czyt/looplj/axonhub:782cd1cf9e1ee068
+    # upstream: docker.io/looplj/axonhub:v1.0.0-beta7
+    image: registry.lazycat.cloud/czyt/looplj/axonhub:4cd38879926639fc
     container_name: axonhub
     environment:
       # 数据库配置 - 用户可配置
