@@ -1,7 +1,7 @@
 name: AxonHub
 package: community.lazycat.app.axonhub
 version: 1.0.0-beta9
-min_os_version: 1.5.0
+min_os_version: 1.5.2
 description: "All-in-one AI 开发平台"
 homepage: https://github.com/looplj/axonhub
 author: looplj
