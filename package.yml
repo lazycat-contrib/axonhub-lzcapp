@@ -1,5 +1,6 @@
 name: AxonHub
 package: community.lazycat.app.axonhub
+license: Apache-2.0
 version: 1.0.0-beta9
 min_os_version: 1.5.2
 description: "All-in-one AI 开发平台"
