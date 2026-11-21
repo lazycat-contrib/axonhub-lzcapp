@@ -23,7 +23,7 @@ images:
     service: axonhub
     source: docker.io/looplj/axonhub
     channel: beta
-    tag_regex: '^v?\d+\.\d+\.\d+-beta\d+$'
+    tag_regex: '^v?\d+\.\d+\.\d+-rc.\d+$'
     delivery:
       mode: lazycat
 
