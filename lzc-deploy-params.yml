@@ -19,7 +19,7 @@ params:
 
   # ==================== 服务配置 ====================
   - id: server_port
-    type: number
+    type: string
     name: "server port"
     description: "Internal server port for AxonHub web interface. Default: 8090"
     default_value: 8090
